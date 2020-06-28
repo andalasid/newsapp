@@ -13,7 +13,7 @@ class Service {
       var response = await http.get(url);
       var rawdata = jsonDecode(response.body);
       var articles = rawdata['articles'];
-
+      _listNews = [];
       articles.forEach((element){
         News news = News(
           source: element['source']['name'],
