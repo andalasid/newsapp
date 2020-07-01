@@ -1,10 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:newsapp/models/news_model.dart';
+import 'package:newsapp/providers/favorites.dart';
 import 'package:newsapp/providers/service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 enum Condition { initial, processing, result }
+//favService
+Favorite favorite = Favorite();
 
 class HomeScreen extends StatefulWidget {
   static const id = '/homescreen';
@@ -123,10 +127,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class BodySection extends StatelessWidget {
+class BodySection extends StatefulWidget {
   final List<News> listNews;
   BodySection({this.listNews});
 
+  @override
+  _BodySectionState createState() => _BodySectionState();
+}
+
+class _BodySectionState extends State<BodySection> {
   _launchURL({BuildContext context, String url}) async {
     if (await canLaunch(url)) {
       await launch(url);
@@ -143,7 +152,8 @@ class BodySection extends StatelessWidget {
         physics: BouncingScrollPhysics(),
         padding: EdgeInsets.all(5),
         child: Column(
-          children: listNews.map((element) {
+          children: widget.listNews.map((element) {
+
             return ListTile(
               onTap: () {
                 _launchURL(context: context, url: element.newsUrl);
@@ -157,7 +167,8 @@ class BodySection extends StatelessWidget {
                     imageUrl: element.imgUrl == null
                         ? 'https://bodybigsize.com/wp-content/uploads/2020/02/noimage-7.png'
                         : element.imgUrl,
-                    placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                    placeholder: (context, url) =>
+                        Center(child: CircularProgressIndicator()),
                     errorWidget: (context, url, error) => Icon(Icons.error),
                     fit: BoxFit.cover,
                   ),
@@ -172,6 +183,22 @@ class BodySection extends StatelessWidget {
                 element.source,
                 style: TextStyle(fontSize: 12),
               ),
+              trailing: IconButton(
+                  icon: Icon(
+                   LineIcons.heart_o,
+                    color: Colors.green,
+                  ),
+                  onPressed: () {
+                    favorite.save(news: element).then((value) {
+                      Scaffold.of(context).showSnackBar(
+                          SnackBar(
+                            duration: Duration(
+                              milliseconds: 500
+                            ),
+                            backgroundColor: Colors.green,
+                            content: Text('News has been saved')));
+                    });
+                  }),
             );
           }).toList(),
         ),

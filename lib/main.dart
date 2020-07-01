@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:newsapp/views/home_screen.dart';
+import 'package:newsapp/views/base.dart';
+import 'package:newsapp/views/home.dart';
  
 void main() => runApp(MyApp());
  
@@ -17,9 +18,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue
       ),
       title: 'News App',
-      initialRoute: HomeScreen.id,
+      initialRoute: Base.id,
       routes: {
-        HomeScreen.id : (context)=> HomeScreen()
+        HomeScreen.id : (context)=> HomeScreen(),
+        Base.id : (context)=> Base()
+
       },
     );
   }
